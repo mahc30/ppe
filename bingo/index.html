@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="juega()"> Juega </button>
+    <p id="bola_seleccionada"> Bola Seleccionada: </p>
+    <p id="B">B</p>
+    <p id="I">I</p>
+    <p id="N">N</p>
+    <p id="G">G</p>
+    <p id="O">O</p>
+
+</body>
+
+<script>
+
+
+    let genRandomInt = (min, max) => {
+        var number = Math.random() * (max - min) + min;
+        return Math.floor(number);
+    }
+
+    let genRandomInts = (min, max) => {
+        var numbers = []
+        for (var i = min; i < max; i++) {
+            numbers.push(i)
+        }
+
+        //Shuffle it
+
+        for (var i = 0; i < numbers.length; i++) {
+            let temp = numbers[i]
+            let pos = genRandomInt(0, numbers.length - 1);
+
+            numbers[i] = numbers[pos];
+            numbers[pos] = temp;
+        }
+
+        console.log("GENERATING ROWS")
+        console.log(numbers);
+        //Reduce it
+        let finalNumbers = []
+        for (var i = 0; i < 5; i++) {
+            finalNumbers.push(numbers[i])
+        }
+        console.log(finalNumbers);
+
+        return finalNumbers;
+    }
+
+    // Bingo 75 bolas)?
+    //Lógica de sacar las bolas
+    let balls = []
+
+    for (var i = 1; i <= 75; i++) {
+        balls.push(i)
+    }
+
+    let selectBall = () => {
+        let ball = genRandomInt(1, balls.length);
+        ball = balls[ball]
+
+        document.getElementById("bola_seleccionada").innerHTML = "Bola Seleccionada: " + ball;
+        return ball;
+    }
+
+    let removeBall = (ball) => {
+        balls = balls.filter(e => {
+            return e != ball
+        })
+    }
+    //Lógica de generar tableros
+    //B -> 1 - 15
+    //I -> 16 - 30
+    //N -> 31 - 45
+    //G -> 46 - 60
+    //O -> 61 - 75
+
+    let b = []
+    let y = []
+    let n = []
+    let g = []
+    let o = []
+
+    for (var j = 0; j < 5; j++) {
+        b = genRandomInts(1, 15);
+        y = genRandomInts(16, 30);
+        n = genRandomInts(31, 45);
+        g = genRandomInts(46, 60);
+        o = genRandomInts(61, 75);
+    }
+
+    //Imprimir tablero en pantalla
+    let B = document.getElementById("B")
+    let I = document.getElementById("I")
+    let N = document.getElementById("N")
+    let G = document.getElementById("G")
+    let O = document.getElementById("O")
+
+    let updateTab = () => {
+        for (var j = 0; j < 5; j++) {
+            B.innerText = B.innerText + " " + b[j]
+            I.innerText = I.innerText + " " + y[j]
+            N.innerText = N.innerText + " " + n[j]
+            G.innerText = G.innerText + " " + g[j]
+            O.innerText = O.innerText + " " + o[j]
+        }
+    }
+
+    let updateNumbers = (num) => {
+        if (num <= 15) {
+            let pos = b.indexOf(num);
+            b[pos] = "√"
+            console.log("n:B " + num)
+        } else if (num > 15 && num < 30) {
+            let pos = y.indexOf(num);
+            y[pos] = "√"
+            console.log("n:I " + num)
+
+        } else if (num >= 30 && num < 45) {
+            let pos = n.indexOf(num);
+            n[pos] = "√"
+            console.log("n:N " + num)
+
+        } else if (num >= 45 && num < 60) {
+            let pos = g.indexOf(num);
+            g[pos] = "√"
+            console.log("n:G " + num)
+
+        } else if (num >= 60) {
+            let pos = o.indexOf(num);
+            o[pos] = "√"
+            console.log("n:O " + num)
+
+        }
+
+        B.innerText = "B"
+        I.innerText = "I"
+        N.innerText = "N"
+        G.innerText = "G"
+        O.innerText = "O"
+    }
+
+    let juega = () => {
+        updateTab()
+        let ball = selectBall();
+        removeBall(ball);
+        updateNumbers(ball)
+        updateTab();
+    }
+</script>
+
+</html>
