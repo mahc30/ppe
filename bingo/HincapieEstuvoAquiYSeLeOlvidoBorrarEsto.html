@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="juega()"> Juega </button>
+    <p id="bola_seleccionada"> Bola Seleccionada: </p>
+    <div id="Game1">
+        <p id="B">B</p>
+    </div>
+    <div id="Game2">
+        <p id="I">I</p>
+    </div>
+    <div id="Game3">
+        <p id="N">N</p>
+    </div>
+    <div id="Game4">
+        <p id="G">G</p>
+    </div>
+    <div id="Game5">
+        <p id="O">O</p>
+    </div>
+
+</body>
+
+<script>
+
+
+    let genRandomInt = (min, max) => {
+        var number = Math.random() * (max - min) + min;
+        return Math.floor(number);
+    }
+
+    let genRandomInts = (min, max) => {
+        var numbers = []
+        for (var i = min; i < max; i++) {
+            numbers.push(i)
+        }
+
+        //Shuffle it
+
+        for (var i = 0; i < numbers.length; i++) {
+            let temp = numbers[i]
+            let pos = genRandomInt(0, numbers.length - 1);
+
+            numbers[i] = numbers[pos];
+            numbers[pos] = temp;
+        }
+
+        console.log(numbers);
+        //Reduce it
+        let finalNumbers = []
+        for (var i = 0; i < 5; i++) {
+            finalNumbers.push(numbers[i])
+        }
+        console.log(finalNumbers);
+        return finalNumbers;
+    }
+
+    // Bingo 75 bolas)?
+    let juega = () => {
+        bingo(genRandomInts(1,15),  document.getElementById("Game1"));
+        bingo(genRandomInts(16,30),  document.getElementById("Game2"));
+        bingo(genRandomInts(31,45),  document.getElementById("Game3"));
+        bingo(genRandomInts(46,60),  document.getElementById("Game4"));
+        bingo(genRandomInts(61,75),  document.getElementById("Game5"));
+    }
+
+    function bingo(arr, g){
+        let i = 0;
+        arr.forEach(element => {
+            let b = document.createElement("button");
+            b.innerText = element;
+            b.onclick= () => {
+                b.innerText = '√';
+            };
+            g.appendChild(b);
+        });
+    }
+</script>
+
+</html>
