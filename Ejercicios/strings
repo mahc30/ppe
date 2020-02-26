@@ -1,0 +1,42 @@
+var input = "casa" //Palabra a buscar
+var string = "tqasbcprno"
+
+var char_input = input.split('');
+var char_string = string.split('');
+
+var c = 0;
+
+var found = false;
+//Completa
+if(string.includes(input)){
+    console.log("Existe Competa");
+    found = true;
+}
+
+//En orden
+for(var i = 0; i < char_string.length; i++){
+    if(char_string[i] === char_input[c]){
+        
+        c++;
+       
+        if(char_input.length - 1 === c){
+            console.log(input, " Encontrada en orden");
+            found = true;
+            break;
+        }
+    }
+}
+
+for(var i = 0; i < char_string.length; i++){
+    if(char_string[i] === char_input[char_input.length - 1]){
+        char_input.pop();
+        
+        if(char_input.length === 0){
+            console.log("Encontrada inversa");
+            found = true;
+            break;
+        }
+    }
+}
+
+if(!found) console.log("No fue encontrada");
