@@ -108,7 +108,7 @@ let buffer: string[] = [];
 let entrada: string[] = [];
 let raw_lane: number = 0;
 
-for (var conjunto: number = 0; conjunto < 4; conjunto++) {
+for (var conjunto: number = 0; true; conjunto++) {
 
     let input: string;
     let n_in: number;
