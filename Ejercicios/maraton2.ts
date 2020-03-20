@@ -81,7 +81,7 @@ let gallons: number[] = [];
 let entries: string[] = [];
 let exits: Exit[] = [];
 let valves: Valve[] = [];
-let configs: boolean[][] = [[]];
+let configs: boolean[][] = [];
 
 //Primeros datos para hacer ciclos para guardar el resto de configuraciones más bonito c:
 input = entrada[0];
@@ -138,12 +138,14 @@ while (input != "*") {
     line++;
     input = entrada[line];
     buffer = input.split(" ");
+    configs.push([]);
+
     //R = true, L = False
     for (var i = 0; i < n_valves; i++) {
         buffer[i] === "R" ? configs[row].push(true) : configs[row].push(false);
     }
 
-    configs.push([]);
+    console.log(input);
     row++;
 }
 
@@ -174,11 +176,10 @@ for (var i = 0; i < configs.length - 2; i++){
 ************************************************************* */
 
 //Correr diferentes sistemas
-console.log("Sistema de Irrigación #1");
-let runSystem = (valves: Valve[], config: boolean[]) => {
-    console.log("Configuración de válvulas #1");
+console.log("Sistema de Irrigación # 1");
+let runConfig = (valves: Valve[], config: boolean[]) => {
 
-    //Final Config
+    //Config sequence
     for (var i = 0; i < n_valves; i++) {
         valves[i].conf = config[i];
         //console.log(config[i]);
@@ -251,10 +252,12 @@ let runSystem = (valves: Valve[], config: boolean[]) => {
         }
     }
 
-    for (var i = 0; i < exits.length; i++)
-    {
+    for (var i = 0; i < exits.length; i++) {
         console.log("Salida # ", i + 1, "flujo ", exits[i].water);
+        exits[i].water = 0;
     }
+
+
 }
 
 let findValve = (tag: string) => {
@@ -296,4 +299,7 @@ let nextIsExit = (valve: Valve) => {
     return exits.find(compare);
 }
 
-runSystem(valves, configs[0]);
+for (var i = 0; i < configs.length - 1; i++) {
+    console.log("Configuración de válvulas # ", i + 1);
+    runConfig(valves, configs[i]);
+}
