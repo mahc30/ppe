@@ -162,170 +162,6 @@ for (var i = 0; i < exits.length; i++){
 }
 
 for (var i = 0; i < entries.length; i++){
-    console.logconst message: string = 'hello world';
-var entero: number = 23.54
-
-class Valve {
-    tag: string;
-    left: string;
-    right: string;
-    conf: boolean = false;
-    water: number = 0;
-    is_input: boolean = false;
-
-    constructor(tag: string, left: string, right: string) {
-        this.tag = tag;
-        this.left = left;
-        this.right = right;
-    }
-
-    greet() {
-        this.conf ? console.log("L") : console.log("R");
-        return "Hello, " + this.tag;
-    }
-
-    fill(amount: number) {
-        this.water += amount;
-    }
-
-    empty(amount: number) {
-        this.water -= amount;
-    }
-}
-
-class Exit {
-    tag: string;
-    water: number = 0;
-
-    constructor(tag: string) {
-        this.tag = tag;
-    }
-
-    fill(amount: number) {
-        this.water += amount;
-    }
-}
-
-/*
-Ejemplo de Entrada
-3 3 7
-200 40 73
-W1 V1
-W2 V2
-W3 V3
-S1
-S2
-S3
-V1 S1 V4
-V2 V4 V5
-V3 V5 V7
-V4 S1 V6
-V5 V6 V7
-V6 S1 V7
-V7 S2 S3
-R L R L R L R
-L R L R L R L
-*
-*/
-let entrada = ["3 3 7", "200 40 73",
-    "W1 V1", "W2 V2", "W3 V3",
-    "S1", "S2", "S3",
-    "V1 S1 V4", "V2 V4 V5", "V3 V5 V7", "V4 S1 V6",
-    "V5 V6 V7", "V6 S1 V7", "V7 S2 S3",
-    "R L R L R L R",
-    "L R L R L R L",
-    "*"];
-
-let input: string;
-let buffer: string[] = [];
-let n_in: number;
-let n_out: number;
-let n_valves: number;
-let gallons: number[] = [];
-let entries: string[] = [];
-let exits: Exit[] = [];
-let valves: Valve[] = [];
-let configs: boolean[][] = [[]];
-
-//Primeros datos para hacer ciclos para guardar el resto de configuraciones más bonito c:
-input = entrada[0];
-buffer = input.split(" ");
-
-n_in = parseInt(buffer[0]);
-n_out = parseInt(buffer[1]);
-n_valves = parseInt(buffer[2]);
-
-input = entrada[1];
-buffer = input.split(" ");
-
-buffer.forEach(e => {
-    gallons.push(parseInt(e));
-});
-
-
-let line: number = 1;
-
-//Leer entradas
-
-for (var i = 0; i < n_in; i++) {
-    line++;
-    input = entrada[line];
-    buffer = input.split(" ");
-    entries.push(buffer[1]);
-}
-
-//Leer salidas
-for (var i = 0; i < n_out; i++) {
-    line++;
-    input = entrada[line];
-    let exit: Exit = new Exit(input);
-    exits.push(exit);
-}
-
-//Arreglo de valvulas
-for (var i = 0; i < n_valves; i++) {
-    line++;
-    input = entrada[line];
-    buffer = input.split(" ");
-
-    let valve = new Valve(buffer[0], buffer[1], buffer[2]);
-    valves.push(valve);
-
-    if (entries.indexOf(valves[i].tag) > -1) {
-        valves[i].is_input = true;
-    }
-}
-
-let row: number = 0;
-
-while (input != "*") {
-    line++;
-    input = entrada[line];
-    buffer = input.split(" ");
-    //R = true, L = False
-    for (var i = 0; i < n_valves; i++) {
-        buffer[i] === "R" ? configs[row].push(true) : configs[row].push(false);
-    }
-
-    configs.push([]);
-    row++;
-}
-
-//Para probar que se leyeron bien los datos
-/* ***********************************************************
-console.log("%cNumero de Entradas", "color:red", n_in);
-console.log("%cNumero de Salidas", "color:green", n_out);
-console.log("%cNumero de Valvulas", "color:blue", n_valves);
-
-for (var i = 0; i < entries.length; i++){
-    console.log("%cEntradas", "color:red", entries[i]);
-}
-
-for (var i = 0; i < exits.length; i++){
-    console.log("%cSalidas", "color:green", exits[i]);
-}
-
-for (var i = 0; i < entries.length; i++){
     console.log("%cValvulas", "color:purple", valves[i].tag);
 }
 
@@ -338,58 +174,100 @@ for (var i = 0; i < configs.length - 2; i++){
 ************************************************************* */
 
 //Correr diferentes sistemas
+console.log("Sistema de Irrigación #1");
 let runSystem = (valves: Valve[], config: boolean[]) => {
+    console.log("Configuración de válvulas #1");
 
     //Final Config
     for (var i = 0; i < n_valves; i++) {
         valves[i].conf = config[i];
-        console.log(config[i]);
+        //console.log(config[i]);
     }
 
+    let parent_valve: number = 0;
     //Para Cada Valvula
     for (var i = 0; i < n_valves; i++) {
-        let current: Valve;
-        let next: any;
+        let current: any;
 
         //Si es una entrada
         if (isInput(valves[i])) {
             current = valves[i];
+            current.water = gallons[parent_valve];
+            parent_valve++;
 
+            //console.log("Parent Valve found", valves[i].tag);
+            //console.log("Current:", current);
             //Mientras no sea una salida
-            //TODO el ciclo ya no es infinito pero no se comporta como debería
-            while (!nextIsExit(current)) {
+            while (!(current instanceof Exit)) {
                 //Busco la siguiente
                 let next_position: number;
 
                 if (current.conf) //Right
                 {
-                    next_position = find(current.right);
+                    next_position = findValve(current.right);
 
+                    //Ver si la siguiente posición es Valvula o Salida
+                    if (next_position != -1) {
+                        //Es Valvula
+                        transfer(current, valves[next_position]);
+                        current = valves[next_position];
+
+                    } else {
+                        //Es salida
+                        next_position = findExit(current.right);
+                        transfer(current, exits[next_position]);
+
+                        current = exits[next_position];
+
+                        //console.log("Exit pos:", next_position);
+                        //console.log("Exit Found:", current);
+                        break;
+                    }
                 }
                 else //Left
                 {
-                    next_position = find(current.left);
+                    //console.log("Left");
 
+                    next_position = findValve(current.left);
+
+                    if (next_position != -1) {
+                        //Es Valvula
+                        transfer(current, valves[next_position]);
+                        current = valves[findValve(current.left)];
+                    } else {
+                        //Es salida
+                        next_position = findExit(current.left);
+                        transfer(current, exits[next_position]);
+
+                        current = exits[next_position];
+
+                        //console.log("Exit Found:", current);
+                        break;
+                    }
                 }
 
-                next = valves[next_position];
-                current = next;
-
-                console.log("Current: ", current.tag, "L:", current.left, "R:", current.right, "Config: ", current.conf);
-                console.log("Parent: ", valves[i].tag);
-                console.log("Next:", next.tag);
+                //console.log("Current:", current);
             }
         }
     }
+
+    for (var i = 0; i < exits.length; i++)
+    {
+        console.log("Salida # ", i + 1, "flujo ", exits[i].water);
+    }
 }
 
-let find = (tag: string) => {
+let findValve = (tag: string) => {
     let compare = (valve: Valve) => valve.tag === tag;
     return valves.findIndex(compare);
 }
 
+let findExit = (tag: string) => {
+    let compare = (exit: Exit) => exit.tag === tag;
+    return exits.findIndex(compare);
+}
 
-let transfer = (valve1: Valve, valve2: Valve) => {
+let transfer = (valve1: Valve, valve2: any) => {
     let amount = valve1.water;
     valve2.fill(amount);
     valve1.empty(amount);
@@ -418,4 +296,4 @@ let nextIsExit = (valve: Valve) => {
     return exits.find(compare);
 }
 
-runSystem(valves, configs[1]);
+runSystem(valves, configs[0]);
