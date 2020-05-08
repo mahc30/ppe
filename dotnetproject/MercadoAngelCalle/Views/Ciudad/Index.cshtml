@@ -3,14 +3,18 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
+<br>
+<br>
+<br>
+<br>
+<br>
+<h1>Ciudades</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create"  class="btn btn-secondary">Agregar Nueva Ciudad</a>
 </p>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
